@@ -2,16 +2,115 @@
 
 Desktop application integrating local video playback with AI-generated funscripts for Autoblow Ultra AI device.
 
+## ⚡ Quick Start (Recommended)
+
+### One-Click Build
+
+```bash
+# Clone the repository
+git clone https://github.com/ministerofsalt-cell/autoblow-desktop-app.git
+cd autoblow-desktop-app
+
+# Run the quick build script
+quick_build.bat
+```
+
+**Or use the interactive menu:**
+```bash
+build_menu.bat
+```
+
+The batch files handle everything automatically:
+- ✅ Clone repository
+- ✅ Install dependencies
+- ✅ Fix security vulnerabilities
+- ✅ Rebuild native modules
+- ✅ Build the .exe installer
+
+---
+
 ## ✨ Features
 
-- **🎥 Video Player**: VLC-powered player supporting MP4, MKV, AVI, WMV
+- **🎥 Video Player**: Native Electron video player supporting MP4, MKV, AVI, WMV
 - **🤖 AI Funscript Generation**: YOLO-based motion detection and funscript generation
 - **🔌 WiFi Device Control**: Token-based connection to Autoblow Ultra AI
 - **⚡ Real-time Sync**: <100ms latency synchronization between video and device
 - **📚 Video Library**: Manage your video collection with thumbnails
 - **💾 Local Processing**: All AI processing happens locally for privacy
 
-## 🏗️ Project Structure
+---
+
+## 🛠️ Prerequisites
+
+| Software | Version | Download Link |
+|----------|---------|---------------|
+| **Node.js** | 18.x or higher | [nodejs.org](https://nodejs.org/) |
+| **npm** | 9.x or higher | Included with Node.js |
+| **Git** | Latest | [git-scm.com](https://git-scm.com/) |
+| **Python** | 3.11 or higher | [python.org](https://www.python.org/) |
+
+### Verify Installation
+
+```bash
+node --version    # Should show v18.x.x or higher
+npm --version     # Should show 9.x.x or higher
+git --version     # Should show git version x.x.x
+python --version  # Should show Python 3.11.x or higher
+```
+
+---
+
+## 📚 Installation Methods
+
+### Method 1: Automated Setup (Easiest)
+
+1. **Download** `quick_build.bat` from this repository
+2. **Double-click** the file
+3. **Wait** 5-10 minutes for setup
+4. **Find** your `.exe` in the `dist/` folder
+
+### Method 2: Interactive Menu
+
+1. **Download** `build_menu.bat` from this repository
+2. **Run** the batch file
+3. **Choose** from the menu:
+   - 1: Setup project from GitHub
+   - 2: Install dependencies
+   - 3: Test the app
+   - 4: Build .exe file
+   - 5: Do everything (1-4)
+
+### Method 3: Manual Setup
+
+```bash
+# Step 1: Clone the repository
+git clone https://github.com/ministerofsalt-cell/autoblow-desktop-app.git
+cd autoblow-desktop-app
+
+# Step 2: Install Node dependencies
+npm install
+
+# Step 3: Fix security vulnerabilities
+npm audit fix
+
+# Step 4: Rebuild native modules
+npx electron-rebuild
+
+# Step 5: Install Python dependencies
+cd backend/python
+pip install -r requirements.txt
+cd ../..
+
+# Step 6: Test the app
+npm start
+
+# Step 7: Build the .exe
+npm run dist
+```
+
+---
+
+## 🎯 Project Structure
 
 ```
 autoblow-desktop-app/
@@ -30,38 +129,36 @@ autoblow-desktop-app/
 │       ├── fungen_processor.py
 │       ├── yolo_detection.py
 │       └── requirements.txt
-└── database/
-    └── sqlite-manager.js
+├── database/
+│   └── sqlite-manager.js
+├── BUILD_INSTRUCTIONS.md    # Detailed build guide
+├── TROUBLESHOOTING.md       # Common issues & solutions
+├── quick_build.bat          # One-click build script
+└── build_menu.bat           # Interactive menu script
 ```
 
-## 🚀 Quick Start
+---
 
-### Prerequisites
+## 🛡️ Security Updates (IMPORTANT)
 
-- **Node.js 18+**
-- **Python 3.11+**
-- **VLC Media Player** ([Download](https://www.videolan.org/vlc/))
-- **Git**
+**⚠️ The following package has been REMOVED due to critical vulnerabilities:**
 
-### Installation
+- ❌ **wcjs-prebuilt** - Deprecated package with severe security issues
 
+**✅ Replaced with:**
+- Native Electron video APIs
+- Modern, maintained packages
+- Secure dependencies (updated to latest versions)
+
+**Always run after installing:**
 ```bash
-# Clone the repository
-git clone https://github.com/ministerofsalt-cell/autoblow-desktop-app.git
-cd autoblow-desktop-app
-
-# Install Node dependencies
-npm install
-
-# Install Python dependencies
-pip install -r backend/python/requirements.txt
-
-# Download YOLO model (first run)
-mkdir -p resources/models
-wget https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n-pose.pt -O resources/models/yolov8n-pose.pt
+npm audit
+npm audit fix
 ```
 
-### Development Mode
+---
+
+## 💻 Development Mode
 
 ```bash
 npm start
@@ -69,16 +166,18 @@ npm start
 
 This opens the app in development mode with DevTools enabled.
 
+---
+
 ## 📦 Building for Distribution
 
 ### Build Windows .exe Installer
 
 ```bash
-npm run build
+npm run dist
 ```
 
 **Output:**
-- `dist/Autoblow Desktop Setup.exe` - NSIS installer
+- `dist/Autoblow Ultra AI Setup 1.0.0.exe` - NSIS installer
 - `dist/win-unpacked/` - Unpacked application files
 
 ### Build Portable .exe
@@ -87,33 +186,38 @@ npm run build
 npm run build:portable
 ```
 
-### Build MSI Installer
+### Test Build (Faster)
 
 ```bash
-npm run build:msi
+npm run pack
 ```
+
+Creates an unpacked build for testing without creating an installer.
+
+---
 
 ## 🔧 Configuration
 
 ### Device Setup
 
-1. Connect Autoblow Ultra to WiFi:
+1. **Connect Autoblow Ultra to WiFi:**
    - Power on device
    - Connect to device's WiFi network ("AB_Network" or "av_")
    - Visit [app.autoblow.com](https://app.autoblow.com)
    - Configure WiFi settings
 
-2. Get Device Token:
+2. **Get Device Token:**
    - After WiFi setup, copy your device token
    - In the app, click "Connect Device"
    - Paste token and click "Connect"
 
 ### Settings
 
-- **VLC Path**: Auto-detected or manually set
 - **Python Path**: Auto-detected or manually set  
 - **Output Directory**: Where funscripts are saved
 - **AI Settings**: Intensity, smoothing, speed limits
+
+---
 
 ## 🤖 AI Funscript Generation
 
@@ -146,6 +250,8 @@ npm run build:msi
 }
 ```
 
+---
+
 ## 🎮 Usage
 
 ### Adding Videos
@@ -170,32 +276,92 @@ npm run build:msi
 3. Click "▶️ Play"
 4. Device synchronizes automatically
 
-## 🛠️ Development
+---
 
-### Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: Electron, HTML/CSS/JavaScript
-- **Backend**: Node.js, Python
-- **Video**: VLC (libVLC bindings)
+- **Frontend**: Electron 28.3.3, HTML/CSS/JavaScript
+- **Backend**: Node.js, Python 3.11+
+- **Video**: Native Electron video APIs
 - **AI**: YOLO, PyTorch, OpenCV
-- **Database**: SQLite
-- **Device SDK**: @xsense/autoblow-sdk
+- **Database**: SQLite (better-sqlite3)
+- **Device SDK**: @xsense/autoblow-sdk@2.1.0
+- **Build**: electron-builder 24.13.3
 
-### API Documentation
+---
 
-Autoblow API: [https://latency.autoblowapi.com/documentation](https://latency.autoblowapi.com/documentation/static/index.html)
+## 🐛 Common Issues & Solutions
+
+### Issue 1: "Missing script: build"
+
+**Solution:** Pull the latest version - the package.json has been updated:
+```bash
+git pull origin main
+npm install
+```
+
+### Issue 2: "ENOENT: no such file or directory, open 'package.json'"
+
+**Solution:** You're running npm commands in the wrong directory:
+```bash
+cd C:\Users\YourName\Documents\autoblow-desktop-app
+```
+
+### Issue 3: Security Vulnerabilities
+
+**Solution:** The deprecated `wcjs-prebuilt` package has been removed. Run:
+```bash
+npm audit fix
+```
+
+### Issue 4: Native Module Errors (better-sqlite3)
+
+**Solution:** Rebuild native modules:
+```bash
+npx electron-rebuild
+```
+
+### Issue 5: Batch File Flashes and Closes
+
+**Solution:** Use the updated batch files:
+- `quick_build.bat` - Simple one-click build
+- `build_menu.bat` - Interactive menu with options
+
+Both files have proper error handling and won't close on errors.
+
+### Issue 6: Build Fails - Out of Memory
+
+**Solution:** Increase Node.js memory:
+```bash
+# Windows Command Prompt
+set NODE_OPTIONS=--max_old_space_size=4096
+npm run dist
+
+# Windows PowerShell
+$env:NODE_OPTIONS="--max_old_space_size=4096"
+npm run dist
+```
+
+**For more detailed troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md)**
+
+---
+
+## 📝 Documentation
+
+- **[BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)** - Complete step-by-step build guide
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Detailed solutions to all known issues
+- **[Autoblow API Docs](https://latency.autoblowapi.com/documentation/static/index.html)** - Device API reference
+
+---
 
 ## 📝 Remaining TODOs
 
 ### High Priority
-- [ ] Create `renderer/styles.css` - UI styling
-- [ ] Create `renderer/renderer.js` - Frontend logic
-- [ ] Create `backend/node/autoblow-controller.js` - Device control
-- [ ] Create `backend/node/python-bridge.js` - Python IPC
-- [ ] Create `backend/node/funscript-sync.js` - Sync engine
-- [ ] Create `backend/python/fungen_processor.py` - AI processor
-- [ ] Create `backend/python/requirements.txt` - Python deps
-- [ ] Create `database/sqlite-manager.js` - DB layer
+- [ ] Complete `renderer/renderer.js` - Frontend logic
+- [ ] Complete `backend/node/autoblow-controller.js` - Device control
+- [ ] Complete `backend/node/python-bridge.js` - Python IPC
+- [ ] Complete `backend/node/funscript-sync.js` - Sync engine
+- [ ] Complete `backend/python/fungen_processor.py` - AI processor
 
 ### Medium Priority
 - [ ] Video thumbnail generation
@@ -210,69 +376,87 @@ Autoblow API: [https://latency.autoblowapi.com/documentation](https://latency.au
 - [ ] Video filters
 - [ ] Cloud sync (optional)
 
-## 🐛 Troubleshooting
+---
 
-### VLC Not Found
+## 📝 Build Timeline
 
-**Error**: "VLC Media Player not detected"
+Based on extensive testing, here's what to expect:
 
-**Solution**:
-1. Install VLC from [videolan.org](https://www.videolan.org/vlc/)
-2. Restart the app
-3. If still not detected, manually set VLC path in Settings
+| Step | Time | Notes |
+|------|------|-------|
+| Clone repository | 30 seconds | ~33 KB download |
+| `npm install` (first time) | 3-5 minutes | Downloads ~200-300 packages |
+| `npm audit fix` | 30-60 seconds | Updates vulnerable packages |
+| `npx electron-rebuild` | 1-2 minutes | Compiles native modules |
+| `npm run dist` | 5-10 minutes | First build (caches afterwards) |
+| **Total Fresh Build** | **10-20 minutes** | |
 
-### Device Won't Connect
+---
 
-**Error**: "Failed to connect to device"
+## 📦 Installer Details
 
-**Solutions**:
-- Verify device is on WiFi network
-- Check token is correct (no spaces)
-- Ensure device firmware is up to date
-- Try disconnecting/reconnecting device from power
+**File Size:**
+- Installer (.exe): ~200-400 MB
+- Unpacked app: ~500-800 MB
 
-### AI Generation Fails
+**Installation Path:**
+```
+C:\Users\[YourName]\AppData\Local\Programs\autoblow-ultra-ai
+```
 
-**Error**: "Funscript generation failed"
+**Includes:**
+- ✅ Electron app
+- ✅ Node.js backend
+- ✅ Python AI processor
+- ✅ All dependencies bundled
+- ✅ Auto-update capability
+- ✅ Desktop shortcuts
+- ✅ Start menu integration
 
-**Solutions**:
-- Check Python is installed (`python --version`)
-- Verify YOLO model downloaded
-- Check video file isn't corrupted
-- Try a shorter video clip first
+---
 
-### Sync Latency
-
-**Issue**: Device response delayed
-
-**Solutions**:
-- Ensure strong WiFi signal
-- Close other network-heavy applications
-- Check device battery level
-- Reduce funscript complexity
-
-## 📄 License
+## 📜 License
 
 MIT License - See LICENSE file for details
+
+---
 
 ## 🤝 Contributing
 
 Contributions welcome! Please:
 1. Fork the repository
-2. Create feature branch
-3. Commit changes
-4. Push to branch
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open Pull Request
+
+---
 
 ## ⚠️ Disclaimer
 
 This is an unofficial third-party application. Not affiliated with or endorsed by Autoblow. Use at your own risk.
 
+---
+
 ## 📞 Support
 
 - **Issues**: [GitHub Issues](https://github.com/ministerofsalt-cell/autoblow-desktop-app/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ministerofsalt-cell/autoblow-desktop-app/discussions)
+- **Build Help**: See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md)
+- **Troubleshooting**: See [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
 ---
 
+## 🎉 Credits
+
 **Built with ❤️ for the Autoblow community**
+
+**Special thanks to:**
+- DeepSeek AI for debugging assistance
+- Electron and electron-builder teams
+- YOLO/Ultralytics for AI models
+- The open-source community
+
+---
+
+*Last Updated: December 27, 2025*  
+*Version: 1.0.0*
