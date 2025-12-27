@@ -1,136 +1,218 @@
 # 🚀 Build Instructions - Autoblow Desktop App
 
-## How to Compile the App into a Windows .EXE Installer
+## IMPORTANT: Updated Instructions from DeepSeek Debugging
 
-### Prerequisites
-
-1. **Node.js 18+** - Download from [nodejs.org](https://nodejs.org/)
-2. **Python 3.11+** - Download from [python.org](https://www.python.org/)
-3. **VLC Media Player** - Download from [videolan.org](https://www.videolan.org/)
-4. **Git** - Download from [git-scm.com](https://git-scm.com/)
+These instructions have been updated based on extensive debugging sessions to fix all build issues.
 
 ---
 
-## Step 1: Clone and Install Dependencies
+## Quick Start (Recommended)
+
+### Option 1: Use the Automated Batch File
+
+1. **Download and run `setup_and_build.bat`** (included in the repository)
+2. **Double-click** the file
+3. **Follow the prompts**
+4. Your `.exe` will be in the `dist/` folder
+
+### Option 2: Manual Setup (Step-by-Step)
 
 ```bash
-# Clone the repository
+# Step 1: Clone the repository
 git clone https://github.com/ministerofsalt-cell/autoblow-desktop-app.git
 cd autoblow-desktop-app
 
-# Install Node.js dependencies
+# Step 2: Install dependencies (this may take 3-5 minutes)
 npm install
 
-# Install Python dependencies
-pip install -r backend/python/requirements.txt
+# Step 3: Fix security vulnerabilities
+npm audit fix
+
+# Step 4: Rebuild native modules for Electron
+npx electron-rebuild
+
+# Step 5: Test the app
+npm start
+
+# Step 6: Build the .exe installer
+npm run dist
 ```
 
 ---
 
-## Step 2: Install Additional Dependencies
+## Prerequisites
 
-The app requires some additional packages for building and video processing:
+### Required Software
+
+| Software | Version | Download Link |
+|----------|---------|---------------|
+| **Node.js** | 18.x or higher | [nodejs.org](https://nodejs.org/) |
+| **npm** | 9.x or higher | Included with Node.js |
+| **Git** | Latest | [git-scm.com](https://git-scm.com/) |
+| **Python** | 3.11 or higher | [python.org](https://www.python.org/) |
+
+### Verify Installation
 
 ```bash
-# Install Electron Builder and Store
-npm install --save-dev electron-builder
-npm install electron-store
+# Check Node.js version
+node --version
+# Should show: v18.x.x or higher
 
-# Install Autoblow SDK
-npm install @xsense/autoblow-sdk
+# Check npm version
+npm --version
+# Should show: 9.x.x or higher
 
-# Install VLC bindings
-npm install wcjs-prebuilt
+# Check Git
+git --version
+# Should show: git version x.x.x
 
-# Install SQLite
-npm install better-sqlite3
+# Check Python
+python --version
+# Should show: Python 3.11.x or higher
 ```
 
 ---
 
-## Step 3: Development Testing
+## Step-by-Step Build Process
 
-Before building, test the app in development mode:
+### Step 1: Clone the Repository
 
 ```bash
-npm run dev
+# Create a project folder (NOT on Desktop!)
+mkdir C:\Users\YourName\Documents\autoblow-desktop-app
+cd C:\Users\YourName\Documents\autoblow-desktop-app
+
+# Clone the repository
+git clone https://github.com/ministerofsalt-cell/autoblow-desktop-app.git .
 ```
 
-This will open the app in development mode. Test all features:
-- Video playback
-- Device connection
-- AI funscript generation
-- Video library management
+**⚠️ IMPORTANT:** Do NOT run npm commands directly on your Desktop. Always work in a proper project folder.
 
 ---
 
-## Step 4: Build the Windows .EXE Installer
+### Step 2: Install Dependencies
 
-### Option A: Using npm run build (Recommended)
+```bash
+# Install all dependencies from package.json
+npm install
+```
+
+**Expected output:**
+- ~200-300 packages will be installed
+- Takes approximately 3-5 minutes
+- Total size: ~200-300 MB
+
+**If you see warnings about vulnerabilities:**
+```bash
+npm audit
+npm audit fix
+```
+
+---
+
+### Step 3: Fix Security Issues
+
+**CRITICAL:** The `wcjs-prebuilt` package has been REMOVED from this project due to severe security vulnerabilities.
+
+The updated `package.json` now uses:
+- ✅ Native Electron video APIs
+- ✅ Modern, maintained packages
+- ✅ No deprecated dependencies
+
+Run security audit:
+```bash
+npm audit
+npm audit fix
+```
+
+---
+
+### Step 4: Rebuild Native Modules
+
+Some packages like `better-sqlite3` need to be compiled for Electron:
+
+```bash
+# Install electron-rebuild if not already installed
+npm install --save-dev electron-rebuild
+
+# Rebuild native modules
+npx electron-rebuild
+```
+
+This step is CRITICAL for the app to work correctly.
+
+---
+
+### Step 5: Install Python Dependencies
+
+For the AI funscript generation backend:
+
+```bash
+# Navigate to Python backend
+cd backend/python
+
+# Install Python requirements
+pip install -r requirements.txt
+
+# Return to project root
+cd ../..
+```
+
+---
+
+### Step 6: Test the Application
+
+Before building, test that everything works:
+
+```bash
+npm start
+```
+
+**Expected behavior:**
+- Electron window opens
+- UI loads correctly
+- No console errors
+- Video playback works (if you load a video)
+- Device connection interface is functional
+
+If the app doesn't start, check the [TROUBLESHOOTING.md](TROUBLESHOOTING.md) file.
+
+---
+
+### Step 7: Build the .exe Installer
 
 ```bash
 # Build Windows installer
-npm run build
+npm run dist
 ```
 
-This will:
-1. Compile all source files
-2. Package the Electron app
-3. Create a Windows installer (.exe) in the `dist/` folder
-4. Include all dependencies (Node, Python libraries, VLC)
+**Build process:**
+- Takes 5-10 minutes (first time)
+- Subsequent builds are faster (~2-3 minutes)
+- Creates output in `dist/` folder
 
-### Option B: Manual Electron Builder Command
-
-```bash
-# Build for Windows 64-bit
-npx electron-builder --win --x64
-
-# Build for Windows 32-bit
-npx electron-builder --win --ia32
-
-# Build portable exe (no installer)
-npx electron-builder --win portable
+**Output files:**
+```
+dist/
+├── Autoblow Ultra AI Setup 1.0.0.exe  ← YOUR INSTALLER
+├── win-unpacked/                      ← Unpacked app files
+└── latest.yml                         ← Auto-update config
 ```
 
 ---
 
-## Step 5: Locate Your .EXE File
+## Build Configuration
 
-After building, your installer will be located at:
-
-```
-autoblow-desktop-app/
-└── dist/
-    ├── Autoblow Desktop App Setup 1.0.0.exe    # Main installer
-    ├── win-unpacked/                            # Unpacked app files
-    └── latest.yml                               # Auto-update config
-```
-
-### File Sizes (Approximate)
-- **Installer (.exe)**: ~200-400 MB (includes Electron, Node, Python deps)
-- **Unpacked**: ~500-800 MB
-
----
-
-## Step 6: Install and Run
-
-1. **Double-click** `Autoblow Desktop App Setup 1.0.0.exe`
-2. Follow the installation wizard
-3. App will be installed to `C:\Users\[YourName]\AppData\Local\Programs\autoblow-desktop-app`
-4. Desktop shortcut will be created
-5. Launch the app!
-
----
-
-## Build Configuration (package.json)
-
-The `package.json` already includes the build configuration:
+The `package.json` includes the following build configuration:
 
 ```json
 {
   "build": {
     "appId": "com.autoblow.desktop",
-    "productName": "Autoblow Desktop App",
+    "productName": "Autoblow Ultra AI",
+    "directories": {
+      "output": "dist"
+    },
     "win": {
       "target": ["nsis", "portable"],
       "icon": "assets/icon.ico"
@@ -141,11 +223,12 @@ The `package.json` already includes the build configuration:
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
     },
-    "files": [
-      "main.js",
-      "renderer/**/*",
-      "backend/**/*",
-      "node_modules/**/*"
+    "extraResources": [
+      {
+        "from": "backend/python",
+        "to": "python",
+        "filter": ["**/*"]
+      }
     ]
   }
 }
@@ -153,82 +236,98 @@ The `package.json` already includes the build configuration:
 
 ---
 
-## Troubleshooting Build Issues
+## Alternative Build Commands
 
-### Issue: "Python not found"
-**Solution**: Add Python to your system PATH
 ```bash
-# Windows: System Properties > Environment Variables
-# Add: C:\Python311\ to PATH
-```
+# Create unpacked build for testing (faster)
+npm run pack
 
-### Issue: "VLC not detected"
-**Solution**: Install VLC and ensure it's in Program Files
-```
-C:\Program Files\VideoLAN\VLC\
-```
+# Build portable .exe (no installer)
+npm run build:portable
 
-### Issue: "electron-builder command not found"
-**Solution**: Install globally
-```bash
-npm install -g electron-builder
+# Build for both 32-bit and 64-bit Windows
+npm run build:msi
 ```
-
-### Issue: "Build fails - out of memory"
-**Solution**: Increase Node memory
-```bash
-set NODE_OPTIONS=--max_old_space_size=4096
-npm run build
-```
-
-### Issue: "YOLO model not found"
-**Solution**: The app will auto-download YOLO on first AI generation. Ensure internet connection.
 
 ---
 
-## Advanced Build Options
+## Common Issues & Solutions
 
-### Build for Multiple Platforms
+### Issue 1: "Missing script: build"
+**Solution:** The package.json has been updated with proper build scripts. Pull latest changes:
 ```bash
-# Windows + Linux
-npx electron-builder -wl
-
-# Windows + Mac + Linux
-npx electron-builder -wml
+git pull origin main
+npm install
 ```
 
-### Code Signing (for distribution)
+### Issue 2: "ENOENT: no such file or directory, open 'package.json'"
+**Solution:** You're running npm commands in the wrong directory. Make sure you're in the project folder:
 ```bash
-# Add to package.json build config
-"win": {
-  "certificateFile": "path/to/cert.pfx",
-  "certificatePassword": "yourpassword"
-}
+cd C:\Users\YourName\Documents\autoblow-desktop-app
 ```
 
-### Auto-Update Configuration
-The app includes auto-update capabilities. Host `latest.yml` and your .exe on a server:
-
-```javascript
-// In main.js (already included)
-const { autoUpdater } = require('electron-updater');
-autoUpdater.checkForUpdatesAndNotify();
+### Issue 3: Security vulnerabilities
+**Solution:** The deprecated `wcjs-prebuilt` package has been removed. Run:
+```bash
+npm audit fix
+npm audit fix --force  # For critical issues
 ```
+
+### Issue 4: Native module errors (better-sqlite3)
+**Solution:** Rebuild native modules:
+```bash
+npx electron-rebuild
+```
+
+### Issue 5: Build fails - out of memory
+**Solution:** Increase Node.js memory:
+```bash
+# Windows Command Prompt
+set NODE_OPTIONS=--max_old_space_size=4096
+npm run dist
+
+# Windows PowerShell
+$env:NODE_OPTIONS="--max_old_space_size=4096"
+npm run dist
+```
+
+For more detailed troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
+---
+
+## Testing Your Build
+
+### Test the Installer
+
+1. **Locate your installer:**
+   ```
+   C:\Users\YourName\Documents\autoblow-desktop-app\dist\Autoblow Ultra AI Setup 1.0.0.exe
+   ```
+
+2. **Test on a clean Windows machine** (if possible)
+
+3. **Verify:**
+   - ✅ Installer runs without errors
+   - ✅ App installs to correct location
+   - ✅ Desktop shortcut created
+   - ✅ Start menu entry created
+   - ✅ App launches successfully
+   - ✅ Video playback works
+   - ✅ Device connection works
 
 ---
 
 ## Distribution Checklist
 
-- [ ] Test app in development mode
-- [ ] Build Windows installer
-- [ ] Test installer on clean Windows machine
-- [ ] Verify VLC video playback works
-- [ ] Test device connection
-- [ ] Test AI funscript generation
-- [ ] Check file sizes are reasonable
-- [ ] (Optional) Code sign the .exe
+- [ ] App runs correctly in development mode (`npm start`)
+- [ ] All features tested and working
+- [ ] No console errors or warnings
+- [ ] Build completes without errors (`npm run dist`)
+- [ ] Installer tested on clean Windows 10/11 machine
+- [ ] File size is reasonable (~200-400 MB for installer)
+- [ ] (Optional) Code sign the .exe with a certificate
 - [ ] Create release notes
-- [ ] Upload to GitHub Releases
+- [ ] Upload to GitHub Releases or distribution platform
 
 ---
 
@@ -237,60 +336,64 @@ autoUpdater.checkForUpdatesAndNotify();
 ```
 autoblow-desktop-app/
 ├── dist/
-│   ├── Autoblow Desktop App Setup 1.0.0.exe  # ✅ YOUR INSTALLER
-│   ├── win-unpacked/
-│   └── latest.yml
-├── src/
+│   ├── Autoblow Ultra AI Setup 1.0.0.exe  ← FINAL INSTALLER
+│   ├── win-unpacked/                      ← Unpacked app
+│   └── latest.yml                         ← Update manifest
 ├── backend/
+│   ├── node/                              ← Node.js backend
+│   └── python/                            ← Python AI processor
 ├── renderer/
-├── package.json
-└── main.js
+│   ├── index.html                         ← Main UI
+│   ├── renderer.js                        ← UI logic
+│   └── styles.css                         ← Styling
+├── main.js                                ← Electron main process
+├── package.json                           ← Dependencies & build config
+├── BUILD_INSTRUCTIONS.md                  ← This file
+├── TROUBLESHOOTING.md                     ← Detailed troubleshooting
+└── setup_and_build.bat                    ← Automated setup script
 ```
 
 ---
 
-## Quick Build Command Summary
+## Installation Path
 
-```bash
-# Install everything
-npm install
-pip install -r backend/python/requirements.txt
-
-# Build Windows installer
-npm run build
-
-# Your .exe will be in: dist/Autoblow Desktop App Setup 1.0.0.exe
+After building and installing, the app will be located at:
 ```
-
----
-
-## Need Help?
-
-- **Electron Builder Docs**: https://www.electron.build/
-- **Node.js Issues**: Check Node version with `node --version`
-- **Python Issues**: Check Python version with `python --version`
-- **VLC Issues**: Reinstall VLC from official site
+C:\Users\[YourName]\AppData\Local\Programs\autoblow-ultra-ai
+```
 
 ---
 
 ## Success! 🎉
 
-You now have a Windows .exe installer that you can:
-- Install on any Windows 10/11 machine
-- Distribute to users
-- Upload to Microsoft Store (with additional steps)
-- Sign with a code signing certificate
+You now have a working Windows executable installer!
 
-The installer includes:
-- ✅ Electron app
-- ✅ Node.js backend
-- ✅ Python AI processor
-- ✅ VLC video player integration
-- ✅ All dependencies bundled
-- ✅ Auto-update capability
-- ✅ Desktop shortcuts
-- ✅ Start menu integration
+**Next steps:**
+1. Test the installer on multiple Windows machines
+2. Gather user feedback
+3. Iterate on features
+4. (Optional) Set up code signing for professional distribution
+5. (Optional) Submit to Microsoft Store
 
-**Installer Location**: `dist/Autoblow Desktop App Setup 1.0.0.exe`
-**File Size**: ~200-400 MB
-**Installation Path**: `C:\Users\[Name]\AppData\Local\Programs\autoblow-desktop-app`
+---
+
+## Additional Resources
+
+- [Electron Documentation](https://www.electronjs.org/docs/latest/)
+- [electron-builder Documentation](https://www.electron.build/)
+- [Node.js Documentation](https://nodejs.org/docs/)
+- [npm Troubleshooting](https://docs.npmjs.com/)
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Detailed solutions to all known issues
+
+---
+
+## Need Help?
+
+- **Issues:** [GitHub Issues](https://github.com/ministerofsalt-cell/autoblow-desktop-app/issues)
+- **Troubleshooting:** See [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- **Updates:** Check this file regularly for latest instructions
+
+---
+
+*Last Updated: December 27, 2025*  
+*Based on: DeepSeek debugging sessions and successful builds*
