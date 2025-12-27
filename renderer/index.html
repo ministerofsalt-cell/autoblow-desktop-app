@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Autoblow Desktop Controller</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>🎬 Autoblow Desktop Controller</h1>
+      <div id="device-status">
+        <span class="status-indicator" id="connection-indicator"></span>
+        <span id="status-text">Not Connected</span>
+        <button id="connect-btn" class="btn-primary">Connect Device</button>
+      </div>
+    </header>
+    
+    <main>
+      <section id="video-section">
+        <div id="video-container" class="video-player">
+          <div class="placeholder">No video loaded</div>
+        </div>
+        <div id="controls" class="player-controls">
+          <button id="play-btn" class="control-btn">▶️ Play</button>
+          <button id="pause-btn" class="control-btn">⏸️ Pause</button>
+          <input type="range" id="seek-bar" min="0" max="100" value="0" class="seek-bar">
+          <span id="time-display" class="time-display">00:00 / 00:00</span>
+          <input type="range" id="volume" min="0" max="100" value="50" class="volume-slider">
+        </div>
+      </section>
+      
+      <aside id="sidebar">
+        <div class="sidebar-section">
+          <h2>📂 Video Library</h2>
+          <button id="add-video-btn" class="btn-secondary">➕ Add Video</button>
+          <div id="video-list" class="video-list"></div>
+        </div>
+        
+        <div class="sidebar-section">
+          <h2>🤖 Funscript</h2>
+          <button id="generate-funscript-btn" class="btn-ai">✨ Generate AI Funscript</button>
+          <button id="upload-funscript-btn" class="btn-secondary">📤 Upload Funscript</button>
+          <div id="funscript-preview" class="funscript-preview"></div>
+        </div>
+
+        <div class="sidebar-section">
+          <h2>⚙️ Settings</h2>
+          <button id="settings-btn" class="btn-secondary">Open Settings</button>
+        </div>
+      </aside>
+    </main>
+    
+    <!-- Connection Modal -->
+    <div id="connection-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>🔌 Connect Autoblow Device</h2>
+        <div class="form-group">
+          <label for="token-input">Device Token:</label>
+          <input type="text" id="token-input" class="input-field" placeholder="Enter your device token">
+        </div>
+        <button id="connect-submit" class="btn-primary">Connect</button>
+        <p class="help-text">💡 Get your token from <a href="https://app.autoblow.com" target="_blank">app.autoblow.com</a> after WiFi setup</p>
+      </div>
+    </div>
+    
+    <!-- AI Generation Modal -->
+    <div id="ai-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-ai">&times;</span>
+        <h2>🤖 Generate AI Funscript</h2>
+        <div id="progress-container" class="progress-container">
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <p id="progress-text" class="progress-text">Ready to start...</p>
+        </div>
+        <div id="settings" class="settings-panel">
+          <div class="form-group">
+            <label>Intensity: <span id="intensity-value">50</span></label>
+            <input type="range" id="intensity" min="0" max="100" value="50" class="slider">
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="smoothing" checked>
+              Enable Smoothing
+            </label>
+          </div>
+          <div class="form-group">
+            <label>Speed Limit (units/ms):</label>
+            <input type="number" id="speed-limit" value="0.4" step="0.1" class="input-field">
+          </div>
+        </div>
+        <button id="start-generation" class="btn-ai">🚀 Start Generation</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Import Electron's ipcRenderer
+    const { ipcRenderer } = require('electron');
+  </script>
+  <script src="renderer.js"></script>
+</body>
+</html>
